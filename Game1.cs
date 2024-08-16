@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -8,6 +9,13 @@ public class Game1 : Game
 {
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
+
+    private Texture2D shipSprite;
+    private Texture2D asteroidSprite;
+    private Texture2D spaceSprite;
+
+    private SpriteFont spaceFont;
+    private SpriteFont timerFont;
 
     public Game1()
     {
@@ -26,14 +34,13 @@ public class Game1 : Game
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-        // TODO: use this.Content to load your game content here
+        LoadSprites();
+        LoadFonts();
     }
 
     protected override void Update(GameTime gameTime)
     {
-        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-            Exit();
+        ExitGameIfRequired();
 
         // TODO: Add your update logic here
 
@@ -44,8 +51,36 @@ public class Game1 : Game
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
-        // TODO: Add your drawing code here
+        _spriteBatch.Begin();
+        _spriteBatch.Draw(spaceSprite, new Vector2(0, 0), Color.White);
+        _spriteBatch.End();
 
         base.Draw(gameTime);
     }
+
+    private void LoadSprites()
+    {
+        shipSprite = LoadSprite("ship");
+        asteroidSprite = LoadSprite("asteroid");
+        spaceSprite = LoadSprite("space");
+    }
+
+    private void LoadFonts()
+    {
+        spaceFont = LoadFont("spaceFont");
+        timerFont = LoadFont("timerFont");
+    }
+
+    private Texture2D LoadSprite(String name) => Content.Load<Texture2D>(name);
+
+    private SpriteFont LoadFont(String name) => Content.Load<SpriteFont>(name);
+
+    private void ExitGameIfRequired()
+    {
+        if (ShouldExitGame()) Exit();
+    }
+
+    private bool ShouldExitGame() => IsBackButtonPressed() || IsEscapeKeyPressed();
+    private bool IsBackButtonPressed() => GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed;
+    private bool IsEscapeKeyPressed() => Keyboard.GetState().IsKeyDown(Keys.Escape);
 }
