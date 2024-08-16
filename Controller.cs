@@ -45,6 +45,8 @@ namespace Spaceship
 
         public Vector2 GetShipPosition() => _ship.GetPosition();
 
+        public bool ShouldShowMenu() => !_inGame;
+
         private void DetectGameStart()
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Enter))

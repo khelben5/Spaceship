@@ -14,7 +14,7 @@ public class Game1 : Game
     private Texture2D _asteroidSprite;
     private Texture2D _spaceSprite;
 
-    private SpriteFont _spaceFont;
+    private SpriteFont _gameFont;
     private SpriteFont _timerFont;
 
     private Controller _controller;
@@ -55,6 +55,7 @@ public class Game1 : Game
         DrawBackground();
         DrawShip();
         DrawAsteroids();
+        DrawMenu();
         _spriteBatch.End();
 
         base.Draw(gameTime);
@@ -76,7 +77,7 @@ public class Game1 : Game
 
     private void LoadFonts()
     {
-        _spaceFont = LoadFont("spaceFont");
+        _gameFont = LoadFont("spaceFont");
         _timerFont = LoadFont("timerFont");
     }
 
@@ -115,7 +116,11 @@ public class Game1 : Game
 
     private void DrawShip()
     {
-        _spriteBatch.Draw(_shipSprite, ToDrawPosition(_controller.GetShipPosition(), _shipSprite), Color.White);
+        _spriteBatch.Draw(
+            _shipSprite,
+            ToDrawPosition(_controller.GetShipPosition(), _shipSprite),
+            Color.White
+        );
     }
 
     private void DrawAsteroids()
@@ -130,8 +135,33 @@ public class Game1 : Game
         }
     }
 
-    private Vector2 ToDrawPosition(Vector2 position, Texture2D sprite) => new Vector2(
-        position.X - sprite.Width / 2,
-        position.Y - sprite.Height / 2
+    private Vector2 ToDrawPosition(Vector2 position, Texture2D sprite) => ToDrawPosition(
+        position,
+        new Vector2(sprite.Width, sprite.Height)
     );
+
+    private Vector2 ToDrawPosition(Vector2 position, Vector2 itemSize) => new Vector2(
+        position.X - itemSize.X / 2,
+        position.Y - itemSize.Y / 2
+    );
+
+    private void DrawMenu()
+    {
+        if (_controller.ShouldShowMenu())
+        {
+            string message = "Press ENTER to play";
+            _spriteBatch.DrawString(
+                _gameFont,
+                message,
+                computeMenuPosition(message),
+                Color.White
+            );
+        }
+    }
+
+    private Vector2 computeMenuPosition(String message)
+    {
+        Vector2 textSize = _gameFont.MeasureString(message);
+        return ToDrawPosition(new(GetCanvasSize().X / 2, 200), textSize);
+    }
 }
