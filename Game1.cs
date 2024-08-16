@@ -42,7 +42,7 @@ public class Game1 : Game
     protected override void Update(GameTime gameTime)
     {
         ExitGameIfRequired();
-        ship.Update();
+        ship.Update(gameTime);
         base.Update(gameTime);
     }
 
