@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Spaceship;
 
-public class Game1 : Game
+public class SpaceshipGame : Game
 {
     private readonly GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
@@ -15,11 +15,11 @@ public class Game1 : Game
     private Texture2D _spaceSprite;
 
     private SpriteFont _gameFont;
-    private SpriteFont _timerFont;
+    private SpriteFont _scoreFont;
 
     private Controller _controller;
 
-    public Game1()
+    public SpaceshipGame()
     {
         _graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
@@ -56,6 +56,7 @@ public class Game1 : Game
         DrawShip();
         DrawAsteroids();
         DrawMenu();
+        DrawScore();
         _spriteBatch.End();
 
         base.Draw(gameTime);
@@ -78,7 +79,7 @@ public class Game1 : Game
     private void LoadFonts()
     {
         _gameFont = LoadFont("spaceFont");
-        _timerFont = LoadFont("timerFont");
+        _scoreFont = LoadFont("timerFont");
     }
 
     private Texture2D LoadSprite(String name) => Content.Load<Texture2D>(name);
@@ -166,5 +167,15 @@ public class Game1 : Game
     {
         Vector2 textSize = _gameFont.MeasureString(message);
         return ToDrawPosition(new(GetCanvasSize().X / 2, 200), textSize);
+    }
+
+    private void DrawScore()
+    {
+        _spriteBatch.DrawString(
+            _scoreFont,
+            $"Score: {(int)_controller.GetScore()}",
+            new(10, 10),
+            Color.White
+        );
     }
 }

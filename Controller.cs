@@ -19,7 +19,8 @@ namespace Spaceship
         private float _maxTimer = _defaultTimer;
         private float _currentTimer;
         private bool _inGame = false;
-        private double _totalTime = 0;
+        private double _score = 0;
+        private double _initialTime;
 
         public Controller(
             Vector2 canvasSize,
@@ -37,36 +38,40 @@ namespace Spaceship
         {
             if (!_inGame)
             {
-                DetectGameStart();
+                DetectGameStart(gameTime);
                 return;
             }
 
             UpdateShip(gameTime);
             UpdateAsteroids(gameTime);
             GenerateNewAsteroidIfNeeded(gameTime);
+            UpdateTotalTime(gameTime);
         }
 
         public List<Asteroid> GetAsteroids() => _asteroids;
 
         public Vector2 GetShipPosition() => _ship.GetPosition();
 
+        public double GetScore() => _score;
+
         public bool ShouldShowMenu() => !_inGame;
 
-        private void DetectGameStart()
+        private void DetectGameStart(GameTime gameTime)
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Enter))
             {
-                ResetGame();
+                ResetGame(gameTime);
                 _inGame = true;
             }
         }
 
-        private void ResetGame()
+        private void ResetGame(GameTime gameTime)
         {
             _ship.Reset();
             _asteroids.Clear();
             _asteroidSpeed = _defaultAsteroidSpeed;
             _maxTimer = _defaultTimer;
+            _initialTime = gameTime.TotalGameTime.TotalSeconds;
         }
 
         private void UpdateShip(GameTime gameTime)
@@ -138,6 +143,11 @@ namespace Spaceship
         private void IncreaseAsteroidSpeed()
         {
             if (_asteroidSpeed < 720) _asteroidSpeed += 4;
+        }
+
+        private void UpdateTotalTime(GameTime gameTime)
+        {
+            _score = gameTime.TotalGameTime.TotalSeconds - _initialTime;
         }
     }
 }
