@@ -2,4 +2,4 @@
 
 Just a small game to learn Monogame.
 
-![spaceship](https://github.com/user-attachments/assets/ae7b8a56-4010-465a-a055-50753b099242)
+https://github.com/user-attachments/assets/e20a0266-f8d2-4d15-8336-849d4d1bd6d1
