@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
@@ -7,14 +8,16 @@ namespace Spaceship
     class Ship
     {
         private readonly Vector2 _defaultPosition;
+        private readonly float _radius;
         private Vector2 _position;
 
         private const float _speed = 200;
 
-        public Ship(Vector2 canvasSize)
+        public Ship(Vector2 canvasSize, float radius)
         {
             _defaultPosition = new(canvasSize.X / 2, canvasSize.Y / 2);
             _position = _defaultPosition;
+            _radius = radius;
         }
 
         public void Update(GameTime gameTime)
@@ -29,5 +32,12 @@ namespace Spaceship
         }
 
         public Vector2 GetPosition() => _position;
+
+        public float GetRadius() => _radius;
+
+        public void Reset()
+        {
+            _position = _defaultPosition;
+        }
     }
 }

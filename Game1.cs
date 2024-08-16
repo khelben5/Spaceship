@@ -89,6 +89,7 @@ public class Game1 : Game
     {
         _controller = new(
             canvasSize: GetCanvasSize(),
+            shipRadius: GetShipRadius(),
             asteroidRadius: GetAsteroidRadius()
         );
     }
@@ -97,6 +98,8 @@ public class Game1 : Game
         _graphics.PreferredBackBufferWidth,
         _graphics.PreferredBackBufferHeight
     );
+
+    private float GetShipRadius() => _shipSprite.Width / 2;
 
     private float GetAsteroidRadius() => _asteroidSprite.Width / 2;
 

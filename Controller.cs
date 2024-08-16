@@ -8,21 +8,26 @@ namespace Spaceship
 
     class Controller
     {
+        private const float _defaultAsteroidSpeed = 200;
+        private const float _defaultTimer = 2;
+
         private readonly List<Asteroid> _asteroids = new List<Asteroid>();
         private readonly Ship _ship;
         private Vector2 _canvasSize;
         private readonly float _asteroidRadius;
-        private float _asteroidSpeed = 200;
-        private float _maxTimer = 2;
+        private float _asteroidSpeed = _defaultAsteroidSpeed;
+        private float _maxTimer = _defaultTimer;
         private float _currentTimer;
         private bool _inGame = false;
+        private double _totalTime = 0;
 
         public Controller(
             Vector2 canvasSize,
+            float shipRadius,
             float asteroidRadius
         )
         {
-            _ship = new(canvasSize);
+            _ship = new(canvasSize, shipRadius);
             _canvasSize = canvasSize;
             _asteroidRadius = asteroidRadius;
             _currentTimer = _maxTimer;
@@ -51,8 +56,17 @@ namespace Spaceship
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Enter))
             {
+                ResetGame();
                 _inGame = true;
             }
+        }
+
+        private void ResetGame()
+        {
+            _ship.Reset();
+            _asteroids.Clear();
+            _asteroidSpeed = _defaultAsteroidSpeed;
+            _maxTimer = _defaultTimer;
         }
 
         private void UpdateShip(GameTime gameTime)
@@ -65,7 +79,15 @@ namespace Spaceship
             foreach (var asteroid in _asteroids)
             {
                 asteroid.Update(gameTime);
+                DetectCollision(asteroid);
             }
+        }
+
+        private void DetectCollision(Asteroid asteroid)
+        {
+            float distance = Vector2.Distance(_ship.GetPosition(), asteroid.GetPosition());
+            bool collision = distance < asteroid.GetRadius() + _ship.GetRadius();
+            if (collision) _inGame = false;
         }
 
         private void GenerateNewAsteroidIfNeeded(GameTime gameTime)
@@ -79,11 +101,11 @@ namespace Spaceship
 
         private bool ShouldGenerateANewAsteroid(GameTime gameTime)
         {
-            _currentTimer -= GetDeltaSeconds(gameTime);
+            _currentTimer -= GetDelta(gameTime);
             return _currentTimer <= 0;
         }
 
-        private float GetDeltaSeconds(GameTime gameTime) => (float)gameTime.ElapsedGameTime.TotalSeconds;
+        private float GetDelta(GameTime gameTime) => (float)gameTime.ElapsedGameTime.TotalSeconds;
 
         private void UpdateTimer()
         {

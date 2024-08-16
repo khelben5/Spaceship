@@ -23,5 +23,7 @@ namespace Spaceship
         }
 
         public Vector2 GetPosition() => _position;
+
+        public float GetRadius() => _radius;
     }
 }
