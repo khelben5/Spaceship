@@ -7,7 +7,7 @@ namespace Spaceship;
 
 public class Game1 : Game
 {
-    private GraphicsDeviceManager _graphics;
+    private readonly GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
 
     private Texture2D _shipSprite;
@@ -17,8 +17,7 @@ public class Game1 : Game
     private SpriteFont _spaceFont;
     private SpriteFont _timerFont;
 
-    private Ship _ship = new Ship();
-    private Asteroid _asteroid;
+    private Controller _controller;
 
     public Game1()
     {
@@ -38,14 +37,13 @@ public class Game1 : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         LoadSprites();
         LoadFonts();
-        _asteroid = new Asteroid(_asteroidSprite.Width / 2);
+        InitialiseController();
     }
 
     protected override void Update(GameTime gameTime)
     {
         ExitGameIfRequired();
-        _ship.Update(gameTime);
-        _asteroid.Update(gameTime);
+        _controller.Update(gameTime);
         base.Update(gameTime);
     }
 
@@ -54,9 +52,9 @@ public class Game1 : Game
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
         _spriteBatch.Begin();
-        _spriteBatch.Draw(_spaceSprite, new Vector2(0, 0), Color.White);
-        _spriteBatch.Draw(_shipSprite, ToRenderPosition(_ship.Position, _shipSprite), Color.White);
-        _spriteBatch.Draw(_asteroidSprite, ToRenderPosition(_asteroid.Position, _asteroidSprite), Color.White);
+        DrawBackground();
+        DrawShip();
+        DrawAsteroids();
         _spriteBatch.End();
 
         base.Draw(gameTime);
@@ -86,6 +84,21 @@ public class Game1 : Game
 
     private SpriteFont LoadFont(String name) => Content.Load<SpriteFont>(name);
 
+    private void InitialiseController()
+    {
+        _controller = new(
+            canvasSize: GetCanvasSize(),
+            asteroidRadius: GetAsteroidRadius()
+        );
+    }
+
+    private Vector2 GetCanvasSize() => new(
+        _graphics.PreferredBackBufferWidth,
+        _graphics.PreferredBackBufferHeight
+    );
+
+    private float GetAsteroidRadius() => _asteroidSprite.Width / 2;
+
     private void ExitGameIfRequired()
     {
         if (ShouldExitGame()) Exit();
@@ -95,7 +108,29 @@ public class Game1 : Game
     private bool IsBackButtonPressed() => GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed;
     private bool IsEscapeKeyPressed() => Keyboard.GetState().IsKeyDown(Keys.Escape);
 
-    private Vector2 ToRenderPosition(Vector2 position, Texture2D sprite) => new Vector2(
+    private void DrawBackground()
+    {
+        _spriteBatch.Draw(_spaceSprite, new Vector2(0, 0), Color.White);
+    }
+
+    private void DrawShip()
+    {
+        _spriteBatch.Draw(_shipSprite, ToDrawPosition(_controller.GetShipPosition(), _shipSprite), Color.White);
+    }
+
+    private void DrawAsteroids()
+    {
+        foreach (var asteroid in _controller.GetAsteroids())
+        {
+            _spriteBatch.Draw(
+                _asteroidSprite,
+                ToDrawPosition(asteroid.GetPosition(), _asteroidSprite),
+                Color.White
+            );
+        }
+    }
+
+    private Vector2 ToDrawPosition(Vector2 position, Texture2D sprite) => new Vector2(
         position.X - sprite.Width / 2,
         position.Y - sprite.Height / 2
     );

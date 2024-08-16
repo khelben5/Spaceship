@@ -5,13 +5,13 @@ namespace Spaceship
 
     class Asteroid
     {
-        public Vector2 Position = new Vector2(600, 300);
-
+        private Vector2 _position;
         private readonly float _radius;
         private readonly float _speed;
 
-        public Asteroid(float radius, float speed = 240)
+        public Asteroid(Vector2 position, float radius, float speed)
         {
+            _position = position;
             _radius = radius;
             _speed = speed;
         }
@@ -19,7 +19,9 @@ namespace Spaceship
         public void Update(GameTime gameTime)
         {
             float deltaSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            Position.X -= _speed * deltaSeconds;
+            _position.X -= _speed * deltaSeconds;
         }
+
+        public Vector2 GetPosition() => _position;
     }
 }
