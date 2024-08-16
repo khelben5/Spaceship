@@ -10,14 +10,15 @@ public class Game1 : Game
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
 
-    private Texture2D shipSprite;
-    private Texture2D asteroidSprite;
-    private Texture2D spaceSprite;
+    private Texture2D _shipSprite;
+    private Texture2D _asteroidSprite;
+    private Texture2D _spaceSprite;
 
-    private SpriteFont spaceFont;
-    private SpriteFont timerFont;
+    private SpriteFont _spaceFont;
+    private SpriteFont _timerFont;
 
-    private Ship ship = new Ship();
+    private Ship _ship = new Ship();
+    private Asteroid _asteroid;
 
     public Game1()
     {
@@ -37,12 +38,14 @@ public class Game1 : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         LoadSprites();
         LoadFonts();
+        _asteroid = new Asteroid(_asteroidSprite.Width / 2);
     }
 
     protected override void Update(GameTime gameTime)
     {
         ExitGameIfRequired();
-        ship.Update(gameTime);
+        _ship.Update(gameTime);
+        _asteroid.Update(gameTime);
         base.Update(gameTime);
     }
 
@@ -51,8 +54,9 @@ public class Game1 : Game
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
         _spriteBatch.Begin();
-        _spriteBatch.Draw(spaceSprite, new Vector2(0, 0), Color.White);
-        _spriteBatch.Draw(shipSprite, ToRenderPosition(ship.position, shipSprite), Color.White);
+        _spriteBatch.Draw(_spaceSprite, new Vector2(0, 0), Color.White);
+        _spriteBatch.Draw(_shipSprite, ToRenderPosition(_ship.Position, _shipSprite), Color.White);
+        _spriteBatch.Draw(_asteroidSprite, ToRenderPosition(_asteroid.Position, _asteroidSprite), Color.White);
         _spriteBatch.End();
 
         base.Draw(gameTime);
@@ -67,15 +71,15 @@ public class Game1 : Game
 
     private void LoadSprites()
     {
-        shipSprite = LoadSprite("ship");
-        asteroidSprite = LoadSprite("asteroid");
-        spaceSprite = LoadSprite("space");
+        _shipSprite = LoadSprite("ship");
+        _asteroidSprite = LoadSprite("asteroid");
+        _spaceSprite = LoadSprite("space");
     }
 
     private void LoadFonts()
     {
-        spaceFont = LoadFont("spaceFont");
-        timerFont = LoadFont("timerFont");
+        _spaceFont = LoadFont("spaceFont");
+        _timerFont = LoadFont("timerFont");
     }
 
     private Texture2D LoadSprite(String name) => Content.Load<Texture2D>(name);
