@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -71,9 +73,9 @@ public class SpaceshipGame : Game
 
     private void LoadSprites()
     {
-        _shipSprite = LoadSprite("ship");
-        _asteroidSprite = LoadSprite("asteroid");
-        _spaceSprite = LoadSprite("space");
+        _shipSprite = LoadSprite("coolShip");
+        _asteroidSprite = LoadSprite("asteroid2");
+        _spaceSprite = LoadSprite("BG");
     }
 
     private void LoadFonts()
