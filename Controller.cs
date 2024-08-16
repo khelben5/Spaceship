@@ -20,7 +20,6 @@ namespace Spaceship
         private float _currentTimer;
         private bool _inGame = false;
         private double _score = 0;
-        private double _initialTime;
 
         public Controller(
             Vector2 canvasSize,
@@ -38,14 +37,14 @@ namespace Spaceship
         {
             if (!_inGame)
             {
-                DetectGameStart(gameTime);
+                DetectGameStart();
                 return;
             }
 
             UpdateShip(gameTime);
             UpdateAsteroids(gameTime);
             GenerateNewAsteroidIfNeeded(gameTime);
-            UpdateTotalTime(gameTime);
+            UpdateScore(gameTime);
         }
 
         public List<Asteroid> GetAsteroids() => _asteroids;
@@ -56,22 +55,13 @@ namespace Spaceship
 
         public bool ShouldShowMenu() => !_inGame;
 
-        private void DetectGameStart(GameTime gameTime)
+        private void DetectGameStart()
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Enter))
             {
-                ResetGame(gameTime);
+                _score = 0;
                 _inGame = true;
             }
-        }
-
-        private void ResetGame(GameTime gameTime)
-        {
-            _ship.Reset();
-            _asteroids.Clear();
-            _asteroidSpeed = _defaultAsteroidSpeed;
-            _maxTimer = _defaultTimer;
-            _initialTime = gameTime.TotalGameTime.TotalSeconds;
         }
 
         private void UpdateShip(GameTime gameTime)
@@ -81,8 +71,9 @@ namespace Spaceship
 
         private void UpdateAsteroids(GameTime gameTime)
         {
-            foreach (var asteroid in _asteroids)
+            for (int i = 0; _inGame && i < _asteroids.Count; i++)
             {
+                Asteroid asteroid = _asteroids[i];
                 asteroid.Update(gameTime);
                 DetectCollision(asteroid);
             }
@@ -92,7 +83,19 @@ namespace Spaceship
         {
             float distance = Vector2.Distance(_ship.GetPosition(), asteroid.GetPosition());
             bool collision = distance < asteroid.GetRadius() + _ship.GetRadius();
-            if (collision) _inGame = false;
+            if (collision)
+            {
+                ResetGame();
+                _inGame = false;
+            }
+        }
+
+        private void ResetGame()
+        {
+            _ship.Reset();
+            _asteroids.Clear();
+            _asteroidSpeed = _defaultAsteroidSpeed;
+            _maxTimer = _defaultTimer;
         }
 
         private void GenerateNewAsteroidIfNeeded(GameTime gameTime)
@@ -145,9 +148,9 @@ namespace Spaceship
             if (_asteroidSpeed < 720) _asteroidSpeed += 4;
         }
 
-        private void UpdateTotalTime(GameTime gameTime)
+        private void UpdateScore(GameTime gameTime)
         {
-            _score = gameTime.TotalGameTime.TotalSeconds - _initialTime;
+            _score += gameTime.ElapsedGameTime.TotalSeconds;
         }
     }
 }
