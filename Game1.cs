@@ -26,8 +26,7 @@ public class Game1 : Game
 
     protected override void Initialize()
     {
-        // TODO: Add your initialization logic here
-
+        SetUpScreenSize();
         base.Initialize();
     }
 
@@ -56,6 +55,13 @@ public class Game1 : Game
         _spriteBatch.End();
 
         base.Draw(gameTime);
+    }
+
+    private void SetUpScreenSize()
+    {
+        _graphics.PreferredBackBufferWidth = 1280;
+        _graphics.PreferredBackBufferHeight = 720;
+        _graphics.ApplyChanges();
     }
 
     private void LoadSprites()
