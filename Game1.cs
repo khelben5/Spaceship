@@ -17,6 +17,8 @@ public class Game1 : Game
     private SpriteFont spaceFont;
     private SpriteFont timerFont;
 
+    private Ship ship = new Ship();
+
     public Game1()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -40,9 +42,7 @@ public class Game1 : Game
     protected override void Update(GameTime gameTime)
     {
         ExitGameIfRequired();
-
-        // TODO: Add your update logic here
-
+        ship.Update();
         base.Update(gameTime);
     }
 
@@ -52,6 +52,7 @@ public class Game1 : Game
 
         _spriteBatch.Begin();
         _spriteBatch.Draw(spaceSprite, new Vector2(0, 0), Color.White);
+        _spriteBatch.Draw(shipSprite, ToRenderPosition(ship.position, shipSprite), Color.White);
         _spriteBatch.End();
 
         base.Draw(gameTime);
@@ -89,4 +90,9 @@ public class Game1 : Game
     private bool ShouldExitGame() => IsBackButtonPressed() || IsEscapeKeyPressed();
     private bool IsBackButtonPressed() => GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed;
     private bool IsEscapeKeyPressed() => Keyboard.GetState().IsKeyDown(Keys.Escape);
+
+    private Vector2 ToRenderPosition(Vector2 position, Texture2D sprite) => new Vector2(
+        position.X - sprite.Width / 2,
+        position.Y - sprite.Height / 2
+    );
 }
